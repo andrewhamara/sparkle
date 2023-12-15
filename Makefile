@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -Wall -g -std=c++14 -Ofast -ffast-math -mtune=native -Wpedantic \
 		   -Wconversion -Wextra -Weffc++ -funroll-loops -flto
 
-EXE = mein
+EXE = sparkle
 
 SRC = main.cpp logic.cpp
 OBJ = $(SRC:.cpp=.o)

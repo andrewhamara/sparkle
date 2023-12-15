@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     return -2;
   }
 
-  bool b = logic(in);
+  logic(in);
 
   return 0;
 }
