@@ -4,7 +4,7 @@ CXXFLAGS = -Wall -g -std=c++14 -Ofast -ffast-math -mtune=native -Wpedantic \
 
 EXE = sparkle
 
-SRC = main.cpp logic.cpp
+SRC = main.cpp transpiler.cpp
 OBJ = $(SRC:.cpp=.o)
 
 all: $(EXE)

@@ -1,6 +1,6 @@
-#include "logic.h"
+#include "transpiler.h"
 
-bool logic(ifstream& in) {
+void logic(ifstream& in) {
   std::ofstream outFile("output.cpp");
   outFile << "#include <iostream>\n";
   outFile << "#include <vector>\n";
@@ -10,41 +10,51 @@ bool logic(ifstream& in) {
 
   string line;
   while (getline(in,line)) {
-    for (auto &c : line) { //shoutout to Scott Meyers
+    for (size_t i = 0; i < line.length(); i++) {
+      auto c = line[i];
+      size_t count = 1;
+
+      while (i+1 < line.length() && line[i+1] == c) {
+        count++;
+        i++;
+      }
       switch (c) {
 
         // -------------------------------
         case '>':
-          outFile << "  idx++;\n";
-          outFile << "  if (idx >= vals.size()) {vals.push_back(0);}\n";
+          outFile << "  idx += " << count << ";\n";
+          outFile << "  if (idx >= vals.size()) {vals.resize(idx+1, 0);}\n";
           break;
         // -------------------------------
 
         // -------------------------------
         case '<':
-          outFile << "  if (curIdx != 0) {curIdx--;}\n";
+          outFile << "  idx -= " << count << ";\n";
+          outFile << "  if (curIdx < 0) {idx = 0;}\n";
           break;
         // -------------------------------
 
         // -------------------------------
         case '?':
-          outFile << "  std::cout << vals[curIdx];\n";
+          for (size_t j = 0; j < count; j++) {
+            outFile << "  std::cout << vals[idx];\n";
+          }
           break;
         // -------------------------------
 
         // -------------------------------
         case '*':
-          outFile << "  vals[curIdx]++;\n";
+          outFile << "  vals[idx] += " << count << ";\n";
           break;
         // -------------------------------
 
         // -------------------------------
         case '!':
-          outFile << "  vals[curIdx]--;\n";
+          outFile << "  vals[idx]-= " << count << ";\n";
           break;
         // -------------------------------
       }
     }
   }
-  return true;
+  outFile << "}\n";
 }

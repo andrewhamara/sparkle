@@ -12,6 +12,6 @@ using std::string;
 using std::vector;
 using std::ifstream;
 
-bool logic(ifstream& in);
+void logic(ifstream& in);
 
 #endif
