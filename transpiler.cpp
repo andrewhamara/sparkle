@@ -12,10 +12,12 @@ void logic(ifstream& in) {
   buffer << in.rdbuf();
   std::string content = buffer.str();
 
+  cout << content << endl;
+
   for (size_t i = 0; i < content.length(); i++) {
     auto c = content[i];
 
-    if (c == '\n' || c == '\r')
+    if (c == '\n' || c == '\r' || c == ' ' || c == '\t')
       continue;
 
     size_t count = 1;
@@ -26,7 +28,7 @@ void logic(ifstream& in) {
         count++;
         i++;
       }
-      else if (next == '\n' || next == '\r') {
+      else if (next == '\n' || next == '\r' || next == ' ' || next == '\t') {
         i++;
       }
       else {
