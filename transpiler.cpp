@@ -8,52 +8,72 @@ void logic(ifstream& in) {
   outFile << "  std::vector<unsigned char> vals(25000,0);\n";
   outFile << "  unsigned long idx = 0;\n";
 
-  string line;
-  while (getline(in,line)) {
-    for (size_t i = 0; i < line.length(); i++) {
-      auto c = line[i];
-      size_t count = 1;
+  std::stringstream buffer;
+  buffer << in.rdbuf();
+  std::string content = buffer.str();
 
-      while (i+1 < line.length() && line[i+1] == c) {
+  for (size_t i = 0; i < content.length(); i++) {
+    auto c = content[i];
+
+    if (c == '\n' || c == '\r')
+      continue;
+
+    size_t count = 1;
+
+    while (i+1 < content.length()) {
+      auto next = content[i+1];
+      if (next == c) {
         count++;
         i++;
       }
-      switch (c) {
-
-        // -------------------------------
-        case '>':
-          outFile << "  idx += " << count << ";\n";
-          outFile << "  if (idx >= vals.size()) {vals.resize(idx+1, 0);}\n";
-          break;
-        // -------------------------------
-
-        // -------------------------------
-        case '<':
-          outFile << "  idx -= " << count << ";\n";
-          outFile << "  if (curIdx < 0) {idx = 0;}\n";
-          break;
-        // -------------------------------
-
-        // -------------------------------
-        case '?':
-          for (size_t j = 0; j < count; j++) {
-            outFile << "  std::cout << vals[idx];\n";
-          }
-          break;
-        // -------------------------------
-
-        // -------------------------------
-        case '*':
-          outFile << "  vals[idx] += " << count << ";\n";
-          break;
-        // -------------------------------
-
-        // -------------------------------
-        case '!':
-          outFile << "  vals[idx]-= " << count << ";\n";
-          break;
-        // -------------------------------
+      else if (next == '\n' || next == '\r') {
+        i++;
       }
+      else {
+        break; // go to next valid instruction
+      }
+
+    }
+    switch (c) {
+
+      // -------------------------------
+      case '>':
+        outFile << "  idx += " << count << ";\n";
+        outFile << "  if (idx >= vals.size()) {vals.resize(idx+1, 0);}\n";
+        break;
+      // -------------------------------
+
+      // -------------------------------
+      case '<':
+        outFile << "  idx -= " << count << ";\n";
+        outFile << "  if (idx < 0) {idx = 0;}\n";
+        break;
+      // -------------------------------
+
+      // -------------------------------
+      case '?':
+        for (size_t j = 0; j < count; j++) {
+          outFile << "  std::cout << vals[idx];\n";
+        }
+        break;
+      // -------------------------------
+
+      // -------------------------------
+      case '*':
+        outFile << "  vals[idx] += " << count << ";\n";
+        break;
+      // -------------------------------
+
+      // -------------------------------
+      case '!':
+        outFile << "  vals[idx]-= " << count << ";\n";
+        break;
+      // -------------------------------
+
+      // -------------------------------
+      default:
+        break;
+      // -------------------------------
     }
   }
   outFile << "}\n";
